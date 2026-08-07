@@ -13,7 +13,7 @@ const { touchFile, absoluteToRelative } = require('./utils/file');
 const { validateApp } = require('./utils/app');
 const tree = require('./utils/tree');
 
-const templatePath = resolve('./packages/lite-ui/template');
+const templatePath = resolve('./bin/template/web-template');
 const { scope, app, sourcePath, appPath } = validateApp({
   template: templatePath,
 });
