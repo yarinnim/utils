@@ -1,0 +1,43 @@
+#! /usr/bin/env node
+const [_node, _app, ...params] = process.argv;
+
+const { resolve } = require('path');
+const { existsSync } = require('fs');
+const { readEnv } = require('./utils/env.js');
+
+function validateFiles(params){
+  const [envFile, constFile] = params;
+  const envFilePath = resolve(envFile);
+  const constFilePath = resolve(constFile);
+  if (!existsSync(envFilePath)) throw new Error('Env file not found');
+  if (!existsSync(constFilePath)) throw new Error('Constant file not found');
+  return { envFile: envFilePath, constFile: constFilePath };
+}
+
+function unionKeys(sourceKeys, destKeys) {
+  const keysSet = new Set(destKeys);
+  return sourceKeys.filter((key) => keysSet.has(key)).sort();
+}
+
+function outsetKeys(sourceKeys, keysToObmit) {
+  const keysSet = new Set(keysToObmit);
+  return sourceKeys.filter((key) => !keysSet.has(key)).sort();
+}
+
+function manipulateKeys(props) {
+  const { envFile, constFile } = props;
+  const constItem = require(constFile);
+  const envItem = readEnv(envFile);
+  const constKeys = Object.keys(constItem);
+  const envKeys = [...new Set(Object.keys(envItem))].sort();
+  const insetKeys = unionKeys(envKeys, constKeys);
+  return {
+    insetKeys,
+    envKeys: outsetKeys(envKeys, insetKeys),
+    constKeys: outsetKeys(constKeys, insetKeys),
+  };
+};
+
+const { envFile, constFile } = validateFiles(params);
+const result = manipulateKeys({ envFile, constFile });
+console.log(result);

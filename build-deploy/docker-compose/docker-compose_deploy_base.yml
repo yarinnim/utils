@@ -1,0 +1,18 @@
+networks:
+  backend:
+    driver: overlay
+  common_backend:
+    external: true
+
+services:
+  SERVICE_NAME:
+    image: "${REGISTRY_IMAGE_FULL_PATH}"
+    hostname: ${APPLICATION_NAME}
+    networks:
+      - common_backend
+      - backend
+    deploy:
+      replicas: 1
+    volumes:
+      - .env:/usr/src/app/apps/${APPLICATION_FOLDER}/.env
+      - ./tmp:/tmp

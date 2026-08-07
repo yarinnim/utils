@@ -1,0 +1,179 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: The Application is about dating system like Tinder.
+globs: src/**/*.ts
+alwaysApply: true
+---
+
+# Application
+
+- Use Typescript for all
+- Use English for all code and documentation
+- Run the ``npm run eslint`` to validate and fix the linting based on ``eslint.config.js``.
+- Do not implement extra functions rather than defined in the features or prompt.
+
+# Code Style
+
+- Type import must be with ``import { type Typename } from './module';``.
+- Maintain the same functionality but with less code duplication
+- Keep all modules skinny
+- Type Safety with typescript
+- Follow module-based approach (no classes)
+- Proper null handling
+- Always follow linting from ``eslint.config.js`` configuration
+- Uses promise/then instead of async/await
+- Documen all function with JTDocs with example
+- TypeScript Type: Use type definitions instead of interfaces
+- Case: Use pascalCase always
+- Use descriptive variable names (eg. isLoading, hasPermission)
+- Avoid using ``any`` type.
+- Use complete word instead of abbreviation and correct spelling.
+- Never user ``for`` loop, use recursive in stead.
+- Never use ``while`` loop, use recursive in stead.
+- Never exceed 100 characters or columns per line
+- When the string is too long, separate lines into array and merge using ``join(' ')`` method.
+- Never use legacy or deprecated function, type or property.
+- Use quick return.
+- Never use ``Promise.all``, use ``promise.then`` only.
+- Always clean and remove unused property, parameter, variable and imorted member.
+- Too long string example
+
+    ```ts
+    const description = [
+      'Welcome to the Vibe coding structure.',
+      'We need to make sure everthing is formated',
+      ---
+    ].join(' ');
+    ```
+
+## Variable
+
+- Object member always in ``camelCase``.
+- Always name it using pascal Case (pascalCase)
+- Never user term of ``array``, ``data``, ``info``, ``record`` as suffixing.
+- The constant object used for configuration naming is pascaleCase but its member is UPPER_CASE as the following example:
+
+  ```ts
+  export const userStatus = {
+    LOCKED: 'locked',
+    ACTIVE: 'active',
+  };
+  ```
+## Type Declaration
+
+- Use ``type`` instead of ``interface`` if there is not action
+- Avoiding using ``any`` as type.
+- Naming using ``PascalCase``.
+- Type members must be in ``camelCase``.
+
+## Function and calling a function
+
+- Use atomic function concept and approach.
+- Function name is pascal Case (pascalCase)
+- Each function start with verb.
+- Write short function for single purpose, less than 20 instructions.
+- If the function returns boolean, use ``isX``, ``canX``, ``hasX``.
+- Each function export individually with own export
+- Number of function parameters: maximum is 3, which the 3rd is with optional value.
+
+### **No parameter Spread**
+
+- Avoiding using extracted type for parameters, use 
+
+```ts
+// DO NOT
+const myFuncName = ({ name, age, gender}: User) =>
+
+// DO
+const myFunName = (user: User) => {
+  const { name,age, gender } = user;
+  /* -- function body -- */
+}
+```
+
+- Long string parameter, need to be declared first, to keep the code clean and easier to read.
+
+```ts
+  // [BAD] NOT TO USE THIS WAY
+  .then(({ subtitle, phrases }: {
+    subtitle: Subtitle;
+    phrases: Array<{entryId: number, timeline: string, translatedPhrase: string}>,
+  }) => writeExportFile(subtitle, phrases, subtitleId, destinationLanguage))
+
+  // [GOOD] USE THIS
+
+  type Phrase = {
+    entryId: number,
+    timeline: string,
+    translatedPhrase: string,
+  };
+
+  type Reesult = {
+    subtitle: Subtitle,
+    phrases: Phrase[]
+  };
+
+  /* --- */
+  .then((result: Result) => {
+    const { subtitle, phrases } = result;
+    return writeExportFile(subtitle, phrases, subtitleId, destinationLanguage);
+  });
+```
+
+## Avoid Quick return with catch
+
+When using promise/then or try catch, no need use quick return, throw error in stead.
+
+```ts
+return findUser(1)
+  .then((user: User) => {
+    const hasUser = user || false;
+    if (!hasUser) throw new Error('User does not exist.');
+    return user;
+  })
+  .catch((error: Error) => {
+    const { message } = error;
+    logger().error({ action: 'user.get', message });
+  });
+``
+
+## Nested promise/then
+
+- Use quick return, to make code clean
+- The ``throw new Error`` or ``throw`` as quick failed process.
+- Try not to have nested ``then``.
+- No promise hell is implemented.
+- Declare another function and use it to avoid **then hell**.
+- Use next ``then`` rather than return another promise
+
+```ts
+const processInfo = functionA()
+  .then((result) => {
+    if (!result) throw new Error('Error');
+    return functionB(result);
+  })
+  .then((resultA) => functionC(resultA));
+```
+
+## Implemenation
+
+- Create only required or told function/modules .
+- Never create extra function to be used in the future.
+
+## Testing
+
+- Use the standard Jest framework for testing
+- Auto generate unit test file located next to the module and suffixed by ``.test.ts``
+
+## Memory Bank
+
+- User-defined feature is located under the ``memory-bank/feature`` folder
+- Main feature is defined in the ``memory-bank/feature/index.md`` file
+- Never update the content of the user-defined features
+- Never generate any content automatically on the user-define features (``memory-bank/feature``).
+- Initialize or Update memory bank must strictly follow cursor rules.
+- Initialize or update memory bank, need to create the ``feature`` folder if not exist

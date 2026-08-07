@@ -1,0 +1,14 @@
+{
+  "name": "@{SCOPE_NAME}/{PACKAGE_NAME}",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --build -f ./tsconfig.json",
+    "test": "jest --detectOpenHandles --forceExit",
+    "test:dev": "npm run test -- --watchAll",
+    "eslint": "eslint src --ext .ts"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,53 @@
+#! /usr/bin/env node
+
+const fs = require('fs');
+const path = require('path');
+
+const dumpFiles = [
+  'package-lock.json',
+  'tsconfig.tsbuildinfo',
+  'package-tsconfig.tsbuildinfo',
+  '.DS_Store',
+];
+
+// const dumpDirs = ['build', 'node_modules', 'public'];
+const dumpDirs = ['build', 'node_modules'];
+const dumpItems = [...dumpDirs, ...dumpFiles];
+const ignoreItems = ['.git'];
+
+const colors = {
+  red: '33',
+};
+
+const display = (name, tab, color = 33) => {
+  const theColor = colors[color] || color;
+  // console.log(`${tab}├─ \x1b[${theColor}m${name}\x1b[0m`);
+};
+
+function cleanDummy(strPath, tab = '│  ') {
+  const items = fs.readdirSync(strPath);
+  items.forEach((item) => {
+    const fullPath = path.resolve(`${strPath}/${item}`);
+    if (!fs.existsSync(fullPath)) return false;
+
+    const isIgnored = ignoreItems.includes(item);
+    if (isIgnored) return false;
+
+    const isDumpItem = dumpItems.includes(item);
+    if (isDumpItem) {
+      display(item, tab, 31);
+      fs.rmSync(fullPath, { recursive: true, force: true });
+      return false;
+    }
+
+    const state = fs.statSync(fullPath);
+    const isDir = state.isDirectory();
+
+    if (isDir) {
+      display(item, tab, 90);
+      cleanDummy(fullPath, `${tab}│  `);
+    }
+  });
+};
+
+module.exports = cleanDummy;

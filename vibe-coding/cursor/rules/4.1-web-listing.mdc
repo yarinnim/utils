@@ -1,0 +1,146 @@
+---
+description: Rules for listing in web component.
+globs:
+alwaysApply: false
+---
+
+# Web Listing
+
+## Use Fetch Hooks
+
+- ``useFetch``
+- ``useAutoFetch``
+- ``useForm``
+
+## List, Table or Grid Component
+
+- Learn and study how the ``useList`` from ``@core/lite-ui/hooks`` works
+- User ``useAutoFetch`` to get the first list
+- Wrapped with wrapper to make ``useList`` works properly if the items is from use fetch hook.
+- List items listing, use ``useList`` from ``@core/lite-ui/hooks``.
+- **DO NOT** pass props to nexted compnent the is more than 3 depth.
+- **Use context based** to store action for specific list, file path is at the same folder.
+
+## Empty List
+
+- Empty List information is another component
+- List is another Compnent
+- Follow the following example:
+
+```tsx
+// Empty List information
+const EmptyInfo = (props: any) => {
+  const { items = [] } = props;
+  if (items.length > 0) return null;
+  return (<div>The list is empty</div>);
+};
+
+// Listing Component
+const ItemsComponent = (props) => {
+  const { items = [] } = props;
+  if (items.legnth === 0) return null;
+  return ItemsList;
+};
+```
+
+
+
+## UI Placement and flow
+
+- The actions are right aligned
+- The action will be group into drop down list with three dots icon.
+- The action dropdown must be right align.
+
+## Example
+
+### Context
+
+
+```ts
+import { createContext } from 'react';
+
+type ContextProps = {
+  action: any,
+};
+
+export const UsersContext = createContext({
+  action: {},
+} as ContextProps);
+
+export const CatalogContext = createContext({
+  action: {},
+} as ContextProps);
+
+```
+
+### Base Component
+
+```tsx
+import { useList } from '@core/lite-ui/hooks';
+import { userApi } from '@/api';
+import { UsersContext } from './Context';
+
+const UsersWrapper = (props: any) => {
+  const { users: initItems } = props;
+  const [users, action] = useList<any>(initItems);
+  const contextValue = { action };
+  return (<div>
+    <UserContext value={contextValue}>
+      { user.map((user: any) => {
+        return (<User key={user.id} user={user} />);
+      }) }
+    </UserContext>
+  </div>);
+};
+
+export default function UsersPage() {
+  const [{ response, isAwait }] = userApi.listing();
+
+  if (isAwait) {
+    return (<h1>Loading...</h1>);
+  }
+
+  return (<div>
+    <h1>User</h1>
+    <UsersWrapper users={response.data} />
+  </div>);
+}
+```
+
+### Deep Nested component to apply
+
+```ts
+import { useContext } from 'react';
+import { UserContext } from './Context';
+import { useTranslation } from '@/hooks';
+
+export default function User(props: any) {
+  const { user } = props;
+  const { action } = useContext(UserContext);
+  const { id, firstNamme, lastName } = user;
+  const translate = useTranslation();
+
+  const update = (evt: any) => {
+    evt.preventDefault();
+    const nextValue = {
+      ...user,
+      firstName: `${firstName}-${Math.random()}`,
+    };
+    action.updateItem('id', id, nextValue);
+  };
+
+  const onDelete = (evt: any) => {
+    evt.preventDefault();
+    action.removeItem('id', id);
+  };
+
+  return (<div style={{ padding: '1em' }}>
+    First name: {fileName}<br />
+    Last Name: {lastName}<br />
+    <div style={{ paddingTop: '0.5em' }}>
+      <button onClick={update}>{translate('Edit')}</button>&nbsp; | &nbsp;
+      <button onClick={onDelete}>{translate('Delete')}</button>
+    </div>
+  </div>);
+}
+```

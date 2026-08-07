@@ -1,0 +1,148 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Database
+
+- Datbase configuration file: src/model/pool.ts
+- Table naming must be singular
+
+## Migration and Table Structure
+
+- If the migration already exists, skip creating.
+- Migration location: ``database/migrations``
+- Include soft delete
+- Migration uses ``table.increments('id').primary()`` instead of ``table.uuid('id').primary()`` for primary field
+- With ``created_at``, ``updated_at``, ``deleted_at`` but only ``created_at`` has default value
+- Declare table as ``const TABLE = 'table-name';``
+- Creating database function, naming is prefixed by ``fn_`` to distingious between built-int functions and user defined functions. Eg. ``fn_generate_number``.
+- Creating unique, use simple name, without ``indexName`` props. Eg. ``table.unique('app_id', 'cod');``
+- Soft Delete is identified by ``deleted_at``.
+- No need to create the ``is_active`` field.
+
+## Seed and Table structure
+
+- Seed location: ``database/seeds``
+- For timestamp do not use ``new Date()``, use ``pool.raw('current_timestamp')``
+- Do not add field that already has default value in the database table.
+
+## Model
+
+### General
+
+- Try to use sub-query in stead of select first and update later.
+- Optimize the query using sub-query.
+- Naming: File and folder name use ``kebab-case``. Eg. ``user-registration.model.ts``.
+- Check migration, if exists, do not create migration.
+- Model files location: ``src/models``
+- The model with table declaration as ``const TABLE:string = 'table name';``;
+- Database connection is located at ``src/models/pool.ts``
+- Model follows the ``src/models/test.model.ts``, database is ``src/models/pool.ts``
+- Model Field name uses camelCase (camel case) because it is changed by ``@core/db`` package
+- Database Table field name use underscore case. Eg. ``first_name``.
+- Include soft delete check with ``whereNull('deleted_at')``
+- Never declare database table field names.
+- When using ``where``, recommend to object base, eg: ``where({ age: 123, name: 'test'})``.
+- Never import any thing from ``knex`` as we use ``@core/db``.
+- Hashing: use ``pool.raw(encode(digest(?, 'sha256'), 'hex'), [rawPassword])``
+- All ``user`` table must be ``public.user``.
+- New created record returns its ID as ``.then(([{ id }]: { id: number }[]) => id)``
+- Use query builder much more than raw query.
+- New created record returns more than one fields: ``.then(([result]: Record<String, any>) => result)``
+- Never add database transaction to select query.
+- Never use ``limit(1)`` with ``first()``.
+- Never validate use input with model, because the model function will return effected records.
+- Each function of model performs only single query, multiple query operation is made with Server.
+- Never export types from model, it should be private only (this protects regression).
+
+### Extended Functions
+The following functions already exist as extended in the ``@core/db``,
+so never implement the following functions:
+
+- ``find``: Finds the first record based on its id
+- ``search``: Searches records based ``q``
+- ``paginate``: Paginate the result, need to called at the last.
+- ``findByField``: Find the first record based on its field value
+- ``exists``: Checks if the record exists or not.
+- ``whereFirst``: Get the first record;
+- ``active``: Get only the active records;
+
+- ``create``: Create the record based on its type.
+- ``remove``: Soft delete
+- ``patch``: Update the record
+
+- Creating new model based on the following code, while its row data type join with BaseEntity:
+
+    ```ts
+    import { initModel } from './pool';
+    import { type BaseEntity } from '@core/db/types';
+
+    export Test = BaseEntity & {
+      /* the rest of fields */
+    };
+
+    const TABLE = 'test';
+    const table = initModel(TABLE);
+    export default table;
+    ```
+
+- Never implement ``findById`` in model, ``find`` method already implemented in @core/db, just use `table().find()`
+- **Timestamp**: use ``pool.raw('current_timestamp')`` instead as the following example:
+
+  ```ts
+    import pool, { initModel } from './pool';
+    ---
+    table().update({ deletedAt: pool.raw('current_timestamp')})
+    --
+  ```
+
+- Do not implement the ``findAll`` function, use ``search`` from ``@core/db``, the syntax is:
+
+  ```ts
+    // Code: ../../packages/db/src/search.ts
+    table().search(q: string, inFields: string[], paginate: Paging);
+  ```
+
+- The order of operations in the search function to call ``search`` last. Eg. ``table().whereNull('deleted_at').search()``
+- The ``createdAt`` is auto generated with database default value.
+- Inserting new record, no need to have ``createdAt`` value.
+- All action query (insert, update, delete), need to have transaction as last parameter as the following example:
+
+  ```ts
+    export const insertUser(user: User, trx?: any) => table(trx).insert(user);
+  ```
+
+- Sub-Query, sub query uses ``builder`` paramter, not use ``this`` paramter. Eg:
+
+```ts
+return table()
+  where('id', (query: QueryBuilder) => {
+    builder.select('id').whereNull('deleted_at');
+  });
+```
+
+## Database Transaction
+
+- Never apply on Select Query
+- Apply on to action Query
+- Transaction used as ``import { type Transaction } from '@core/db';``
+- Separate select and action query as the following example
+
+```ts
+import { type Transaction } from '@core/db;
+import pool from './pool';
+
+return getUser(id)
+  .then((user: User) => {
+    if (!user) throw new Error('User not found);
+    return user;
+  })
+  .then((user: User) => {
+    return pool.transaction((trx: Transaction) => {
+      return updateUser(id, user, trx)
+        .then(() => updateUserIdentify(id, user, trx));
+    });
+  })
+```

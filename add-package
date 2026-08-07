@@ -1,0 +1,65 @@
+#! /usr/bin/env node
+
+/**
+ * This tool is to initialize the application by
+ * installing the required packages that defined
+ * in configuration,  groups them into workspace.
+ *
+ * @author Yarin NIM <yarin.nim@gmail.com>
+ * @copryright 2022
+ */
+const { touchFile } = require('./utils/file');
+const { getApp } = require('./utils/app');
+const { addMembers } = require('./utils/json');
+const stocketClient = require('./package-template/socket-client');
+
+const [_node, _app, app, package] = process.argv;
+const appPath = getApp(app);
+
+const packages = {
+  'socket-client': ['@core/socket-client', 'socket-client', stocketClient],
+};
+
+function validatePackage(package) {
+  const found = packages[package] || false;
+  if (!found) throw new Error('Package not found');
+  return found;
+}
+
+function touchPackageJson(packageName) {
+  touchFile(appPath('package.json'), (data) => {
+    const touchedData = addMembers(data, 'dependencies', {
+      [packageName]: '^1.0.0',
+    });
+    return JSON.stringify(touchedData, null, 2);
+  }, { json: true });
+}
+
+function touchTSConfigJson(packageFolder) {
+  touchFile(appPath('tsconfig.json'), (data) => {
+    const { references = {} } = data;
+    const exists = references.reduce((accu, ref) => {
+      const { path } = ref;
+      const dirname = path.split('/').pop();
+      return dirname === packageFolder ? true : accu;
+    }, false);
+
+    const ref = exists
+      ? references
+      : [...references, { path: `../../packages/${packageFolder}` }];
+
+    const touchedData = { ...data, references: ref };
+
+    return JSON.stringify(touchedData, null, 2);
+  }, { json: true });
+}
+
+function init() {
+  const [packageName, packageFolder, initCodebase] = validatePackage(package);
+  touchPackageJson(packageName);
+  touchTSConfigJson(packageFolder);
+  initCodebase(appPath);
+}
+
+init();
+

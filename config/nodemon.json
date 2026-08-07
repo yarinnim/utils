@@ -1,0 +1,9 @@
+{
+  "watch": ["src/**/*.ts", "swagger/**/*.ts"],
+  "ext": "ts",
+  "ignore": [
+    "src/**/*.spec.ts",
+    "build/**/*",
+    "node_modules/**/*"
+  ]
+}

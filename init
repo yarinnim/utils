@@ -1,0 +1,89 @@
+#! /usr/bin/env node
+
+/**
+ * This tool is to initialize the application by
+ * installing the required packages that defined
+ * in configuration,  groups them into workspace.
+ *
+ * @author Yarin NIM <yarin.nim@gmail.com>
+ * @copryright 2022
+ */
+
+const [_node, _app, ...apps] = process.argv;
+
+const { resolve } = require('path');
+const { existsSync, readFileSync, writeFileSync } = require('fs');
+const { execSync } = require('child_process');
+const { generateSingleApp, generateMultiApps } = require('./init-apps/generate-package-json');
+const cleanBuild = require('./init-apps/clean-build');
+
+const getAppPath = (app) => {
+  const appPath = resolve(`${__dirname}/../${app}`);
+  const jsonFile = `${appPath}/package.json`;
+  if (!existsSync(jsonFile)) {
+    throw new Error(`Invalid Application [${app}]`);
+  }
+
+  const json = JSON.parse(readFileSync(jsonFile));
+  const { name = false } = json;
+  if (!name) {
+    throw new Error(`Invalid package.json in ${app}`);
+  }
+  return appPath;
+};
+
+/**
+ * Writes the generated package.json content
+ * into package.json file
+ */
+const writePackageJson = (json) => {
+  console.log(json);
+  writeFileSync(
+    './package.json',
+    JSON.stringify(json, null, 2),
+  );
+};
+
+/**
+ * Writes package.json as single project
+ * @params {string} app: The application path
+ */
+const registerSingleApp = (app) => {
+  const appPath = getAppPath(app);
+  const json = generateSingleApp({ app, appPath });
+  writePackageJson(json);
+};
+
+/**
+ * Write and install the many applications
+ * by looping each application, get the packages
+ * and add into one.
+ */
+const registerMultiApps = () => {
+  apps.map((app) => getAppPath(app));
+  const json = generateMultiApps({ apps });
+  writePackageJson(json);
+};
+
+/**
+ * Procceed the installation
+ *
+ * To init single application
+ * $> ./bin/init apps/test/test-web
+ *
+ * To init multi-projects, each applicatio is separated by space
+ * $> ./bin/init apps/test/test-web apps/test/test-api
+ */
+const proceed = () => {
+  if (apps.length === 1) {
+    const [app] = apps;
+    registerSingleApp(app);
+  } else {
+    registerMultiApps();
+  }
+  console.log('# Installing node_modules...');
+  execSync('npm install', { stdio: 'inherit' });
+};
+
+cleanBuild('./');
+proceed();

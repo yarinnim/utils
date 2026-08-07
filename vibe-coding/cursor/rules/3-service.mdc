@@ -1,0 +1,186 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+Description: Service layer, micro-service
+Globs: src/service/**/*.ts
+alwaysApply: true
+---
+
+# Structure
+
+- All service located under the ``src/{SERVICE_NAME}`` folder
+- If type is the same from model, use from model instead
+- Once service is created it must consist of ``router``, ``controller`` and ``service`` and ``middleware``.
+- Naming: folder and file name use ``kebab-case``. Eg. ``user-registration.controller.ts``.
+
+## Service
+
+- When using model, never import ``knex``, as it's abstract.
+- Naming uses dash-case, eg: ``user-registration.service.ts``.
+- The service file name is suffixed as ``.service.ts`` of each service.
+- The service must use it references model, eg ``user`` model from ``src/models/user.ts``
+- Always add ``find`` function.
+- The ``search`` function must be plural. Eg. ``searchCountries``.
+- The ``inFields`` of ``seach`` function must be manually defined.
+
+## Controller
+
+- The controller file name is  ``.countroller.ts`` of each service.
+- The controller never calls function from model, it knows and calls function from service.
+- The controller action needs to return as ``Promise<void>``.
+- The controller action needs to have validation function declare along it.
+- The controller function name is suffixed with ``Action``.
+- The ``paginate`` is a combination of ``pageSize`` and ``page`` from ``request.query``.
+- The ``detailAction`` of countroller, no need to validate the resource exists, because validated by middleare already.
+- Never add extra data to the response, such as ``data``, ``pagination``, ``status`` etc. 
+- When controller action name is changed, fix the name used in route well.
+- Error response: do not add extra field, such as ``status``, ``success``, ``error`` etc. Eg:
+
+    ```ts
+    catch((error: Error) => {
+      const { message } = error;
+      return res.status(400).json({ message });
+    });
+    ```
+- The controller action, need to send log to legger service as the following if ``catch`` meets:
+
+    ```ts
+    // Import logger
+    import logger from '../log-client';
+
+    // Sends to logger service
+    logger().error({ message: 'Error mesasge' });
+    ```
+- Never send flat error response, use as the following example:
+
+    ```ts
+    const { message } = error;
+    res.status(400).json({ message });
+    ```
+
+## Route and Router
+
+- Route is the ``index.ts`` of the service
+- Route resource must be plural ``/users``, not ``/user``.
+- Detail route, must be validated by a middleware to search if the resource available or not.
+- No duplicated routes, must fix the duplicated routes.
+- Do not combind resource detail, NO ``users/:userId``, set ``:userId`` as sub-route.
+- Never use sub-route twice.
+- **Route Hierarchy**: Correct nested routes with parameter inheritance.
+
+### Route syntax from ``@core/api``:
+
+  ```ts
+  import { type Route, type Response, type Request } from '@core/api';
+  import { getAction, postAction, detailAction, updateAction, deleteAction } from './user.controller';
+  import { validateResource } from './user.middleware';
+
+  export default {
+    '/users': ['user', [], {
+        get: getAction,
+        post: postAction,
+    }, {
+      '/:id': ['detail', [validateResource], {
+        get: detailAction,
+        put: updateAction,
+        delete: deleteAction,
+      }]
+    }],
+  } as Route;
+  ```
+
+- After created router, add it to ``/src/routes/index.ts`` as the followng:
+
+  ```ts
+  import { type Route } from '@core/api';
+  import userRoute from '../service/user';
+
+  export default {
+    ...userRoute,
+  } as Route;
+  ```
+
+### Route Detail for getting detail resource
+
+- Format ``users/:id``, method **GET**
+- Route detail is with Middleware always to check the rosource exists or not
+- If not throw the 404 HTTP Code
+- If exist add the found resource directly to the next request.
+- The following is to demonstrate the user detail route and resource:
+
+```ts
+// Route: /users/:id
+
+/** Middleware **/
+const { userId } = request.params;
+return userModel.find(userId)
+  .((user: any) => {
+    if (!(user || false) throw new Error('User not found.');
+    request.user = user;
+    return next();
+  })
+  .catch((error: any) => {
+    const { message } = error;
+    return res.status(404).json({ message });
+  });
+
+/** Controller **/
+export const getUserDetailActon(req: Request, res: Response) => {
+  const { user } = req;
+  /* --- The process for user --- */
+};
+```
+
+### Route Resource
+
+- Use HTTP Method as action 
+- GET: Retreive resource
+- POST: Add or create new resource
+- PUT or PATCH: Upate resource
+- DELETE: Delete resource
+
+## Route Middleware
+
+- **Invalid**: ``return res.statu(--).json(--)``
+- **Valid**: ``return next()``
+- Never return ``Promise`` as it's treated promise in the caller.
+- Example:
+
+```ts
+// DON'T
+response.status(412).json({ message: 'Invalid information.'});
+return;
+
+// DO
+return response
+  .status(412)
+  .json({ message: 'Invalid Information.' });
+```
+
+
+## Job or Cron-job
+
+- Job is located under the ``src/jobs`` folder
+- Filename format is ``JOB-NAME.job.ts``. Eg. ``check-user.job.ts``
+
+## Utilities
+
+- Utilities functions must located under the ``src/utils`` folder
+
+## CLI Console information
+
+- Error: ``[ERROR] Error information``
+- Normal: ``[INFO] Infomration``
+- Warning: ``[WARNING] Warning inromation``
+- Main process information
+
+```cli
+==========================
+Title: title
+Descript: description
+---
+===========================
+```

@@ -1,0 +1,1 @@
+../../../packages/web-config/babel.config.js
