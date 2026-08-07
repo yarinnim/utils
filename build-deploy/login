@@ -1,0 +1,13 @@
+#! /usr/bin/bash
+
+set -e
+
+REGISTRY_HOST=${HOST}
+
+function login() {
+  REGISTRY_USER=${USER}
+  REGISTRY_PWD=$(echo MGdhVkVHRU84UTF1RU8K | base64 --decode)
+  docker login -u ${REGISTRY_USER} -p ${REGISTRY_PWD} $REGISTRY_HOST
+}
+
+login

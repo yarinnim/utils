@@ -1,0 +1,28 @@
+#! /usr/bin/bash
+#
+echo "Starting Web server"
+make clean
+make html
+host=127.0.0.1
+port=8083
+# php -S localhost:8083 -t build/html > /dev/null 2>&1 &
+cd build/html
+python -m http.server 8083 > /dev/null 2>&1 &
+cd ../..
+cks='checksum'
+while :
+do
+	cks1=`find source -type f -name "*.rst" -exec md5sum {} \; | md5sum`
+	if [ "$cks" != "$cks1" ]; then
+		cks=$cks1
+		echo "Compiling"
+		make html
+		clear
+		echo $cks
+		echo "Waiting for changes [http://$host:$port]"
+	fi
+	sleep 1
+done
+
+
+

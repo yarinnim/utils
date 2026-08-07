@@ -1,0 +1,256 @@
+---
+description: General rules which is for web development
+globs: 
+alwaysApply: false
+---
+---
+Description: Web
+Globs: src/**/*.ts
+alwaysApply: true
+---
+
+# Structure
+
+- Responsive
+- Comply with HTML5 standard
+- Fully Progressive Web Application
+- Requesting any resource, use web worker instead.
+
+## Folder Structure
+
+- Routes: ``src/routes``
+- Layouts: ``src/layouts``,
+- Config: ``src/config``
+- Components: ``src/components``
+- Utils: ``src/utils``
+- Pages: ``src/pages``
+- API Services: ``src/api``
+- Project Features: ``src/features``
+- Assets ``assets``
+
+## Layouts
+
+- Layout is the wrapper of the page
+- Location: ``src/layouts``
+- Layout consist of consistence structure, such as sidebar, footer, header.
+- Layout is injected with ``<Outlet />`` from ``react-router``.
+
+## Route
+
+## Pages
+
+- Represent individual page and is placed under specific layout.
+- Location: ``src/pages``.
+- Page name: use singular.
+- As the page is a big component, so folder is preffered, Eg. ``src/pages/User/index.tsx``.
+- Creating page, do not create any handler or event.
+- If page has own dedicated CSS, use folder as page, as the following:
+  - Comonent: `src/pages/User/index.tsx`
+  - Style: `src/pages/User/style.css`
+
+
+## Component
+
+- File location: ``src/components``.
+- Use atomic component concept and approach.
+- Each compnent should not have more than 20 lines of JSX
+- Component layout or form is with another file at the same folder.
+- The created form is always with separated file.
+
+## Component Style
+
+- Each component as own dedicated style.
+- File location `src/components/styles`
+- Each file name refers to its compnent. Eg. `confirm.css` refers to `Confirm.tsx`
+- Style file name is lower case
+- The component style must be prefixed with its component name to avoid the conflict with global style.
+- Long `className`, use declaration as array and join as string
+- Long `style`, use declaration style in stead.
+
+## Icons and SVGs
+
+- The SVG compnents need to be moved to `images` folder
+- The SVG icons must be moved to `icons` folder.
+
+## Translation and i18n
+
+- Use ``userTranslation`` hook to translate content.
+- File location: ``assets/locales``
+- Filename format: ``assets/locales/LANGUE.json``
+- When adding new phrase, always apply the translation and add that phrase to locale file.
+- **GOOD**: ``const translate = useTranslation()``
+- **BAD**: ``const { traslate } = props;``
+
+### File Content
+
+- Do not add English locale file. Eg. ``en.json``.
+- Flat json, key is always ``lower-case``, not sub-key.
+- Flat string, lower case, use spaces (not underscore) to seprarate words. 
+- **DO NOT** and **BAD** to add key already exists
+- **SORT** by keys
+- Do use use underscore or dash, and fully phrase. Eg. **active users**, not **active_users**.
+- User readable words
+
+Eg. Use this formation
+```json
+{
+  "get user information": "Get User Information"
+}
+```
+
+Do not use this formation
+```json
+{
+  "Get User Information": "Get user Information"
+}
+```
+
+### Translate and Translation String
+
+- Use: ``translate`` function.
+- Translate: ``translate('READ_ABLE_WORD')``
+- Translate Content: must be in English. Eg. ``translate('Total Views')``.
+- Translate conent: must ba readable, GOOD ``translat('Total Views`)``, BAD: ``translate('total views')``.
+- Do not convert to lower case: ``translate(strPhrase.toLowerCase())``.
+- **No condition parameter**, No ``translate(iscComplete ? 'complete' : 'pending')``, but use ``isComplete ? translat('Complete') : translate('Pending')``.
+
+### Change Languge
+
+To Change language, the following example will set the language to Chinse:
+
+```ts
+import { useContext } from 'react';
+import context from '@/context';
+
+// ---
+const { i18n } = useContext(context);
+i18n.setLocale('zh');
+```
+
+## Fetching and Fetching Hooks
+
+- ``useFetch``: To fetch
+- ``useAutoFetch``: Automatically fetch a the component mounted
+- ``useForm``: Make the form request.
+- Each request or fetch need to implement the loading mechanism to make sure no duplicated request.
+- Fetch State: ``{ isAwait, response, error }``
+- Fetch Hook Result ``[FETCH-STATE, request]``.
+- **Error Request**: Show error toast, the **Error Message** is from Error Object.
+
+## Loading Component and How to use
+
+- Use ``src/components/Loading.tsx``
+- Accept ``isAwait``, ``message`` and ``children``
+- Return ``null`` if ``isAwait`` is ``false``
+- Code Example:
+
+```tsx
+// Loading Component
+const LoadingComponent = (props: any) => {
+  const { isAwait, message } = props;
+  const defaultMessage = 'Loading...';
+  return (!isAwait) return children;
+  return (<div>{message || defaultMessage}</div>);
+}
+
+// How to user
+import Loading from '@/component/Loading';
+return (<Loading isAwait={fetchState.isAwait}>
+  /* The main compnent goes here */
+</Loading);
+```
+
+
+## API Interface
+
+- Description: The interface to communiate to API
+- File location: ``src/api/*.ts``
+- Each action communicate to API via API Interface
+- Medium: API Interface use fetching hooks (``useFetch``, ``useAutoFetch`` and ``useForm``)
+- All created interface item return ``FetchHook`` type.
+- No direct call native ``fetch`` function.
+
+## Form and Submiting Data
+
+- **Form**: Use native HTML Tag (<form>).
+- Use ``useForm`` hook from ``@/hooks``.
+- Always validated with ``error``, ``errrors`` and ``isAwait``.
+- When ``isAwait`` is ``true``, cannot resubmit or modify any content.
+- All the data is wrapped by <form> Tag with ``action`` and ``method``.
+- All Form elements must have ``name`` attribute.
+- **DO NOT** use **Controlled Component** concept.
+- **No Extract Form Data**: On submit form, no need to get the form data, the ``useForm`` will package data automatically.
+- **No ``evt.preventDefault()**: On submit form, this is handled by ``useForm`` automatically.
+- **No client value is used**: When updating, use response value, not client value.
+- **Hidden Field**: Use native HTML Tag, not extra tag is wrapped, placed right after <form> Tag.
+
+### How to use
+
+```ts
+import { useForm } from '@/hooks';
+
+export default function Form() {
+  const [formState, submitForm] = useForm();
+
+  const onSubmit = (evt: any) => {
+    return submitForm(evt)
+      .then(console.log)
+      .catch(console.log);
+  };
+
+  const { isAwait } = formState;
+  return (<form method="post" action="/api/form" onSubmit={onSubmit}>
+    {/* From content */}
+  </form>);
+}
+``` 
+
+## Feedback 
+
+### Dialog or Confirm window
+
+- **DO NOT** use ``alert`` or ``confirm``
+- **USE** Toast for feedback information
+- **USE** custome confirmation dialog box.
+- **Callbacks**: Dialog window has ``onSuccess``, ``onFailure`` and ``onClose`` callbacks.
+- **Close Dialog** when callback is called.
+- **Dialog** Do not implement the ``onClose``, callbacks, except specified by prompting.
+- **Dialog** Implement the ``onSuccess`` and ``onFailure`` callbacks.
+
+### Inline Fetch Error
+
+- Uses ``fetchState.error``
+- No ``children`` props. It does not have ``children``
+- Accept ``fetchState.error``, ``title`` and ``icon``, ``message`` is from ``error``. 
+- It's indentdent component
+- Example
+
+```ts
+// Component
+export const ErrorAlert = (props: any) => {
+  const { error, title } = props;
+  const { message } = error;
+  if ((!error || false)) return null;
+
+  return (<div>
+    <strong>{title}</strong>
+    <em>{message}</em>
+  </div>);
+};
+
+// How to use
+
+import ErrorAlert from '@/components/ErrorAlert';
+
+return (<div>
+  <ErrorAlert error={fetchState.error} title="ERROR" />
+</div>);
+```
+
+## Spliting or Moving Component to dedicated component
+
+- When moving out some part of the component into anaother componeny
+- Move its CSS/Style as well
+- Move its interactive code and style (css or style)
+- Move its resource such as image, icons, ...
+- Clean all unsed asset and resource from the main component.

@@ -1,0 +1,13 @@
+networks:
+  front-end:
+    driver: overlay
+  common_backend:
+    external: true
+
+services:
+  SERVICE_NAME:
+    image: "${REGISTRY_IMAGE_FULL_PATH}"
+    hostname: ${APPLICATION_NAME}
+    networks:
+      - common_backend
+      - front-end

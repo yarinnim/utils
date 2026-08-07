@@ -1,0 +1,43 @@
+#! /usr/bin/env node
+
+/**
+ * This tool is to initialize the application by
+ * installing the required packages that defined
+ * in configuration,  groups them into workspace.
+ *
+ * @copryright 2022
+ */
+const { resolve } = require('path');
+const { cpSync } = require('fs');
+const { touchFile, absoluteToRelative } = require('./utils/file');
+const { validateApp } = require('./utils/app');
+const tree = require('./utils/tree');
+
+const templatePath = resolve('./packages/lite-ui/template');
+const { scope, app, sourcePath, appPath } = validateApp({
+  template: templatePath,
+});
+
+function touchFiles() {
+  const files = [
+    'Dockerfile',
+    'env.example',
+    'nginx-proxy.conf',
+    'package.json',
+  ];
+  files.forEach((file) => touchFile(appPath(file), (content) => {
+    return content
+      .replaceAll('{SCOPE_NAME}', scope)
+      .replaceAll('{APP_NAME}', app);
+  }));
+}
+
+function init() {
+  cpSync(sourcePath, appPath(), { recursive: true });
+  absoluteToRelative(appPath());
+  touchFiles();
+}
+
+init();
+console.log('[INFO] Code-base initialization is done...');
+tree(appPath());

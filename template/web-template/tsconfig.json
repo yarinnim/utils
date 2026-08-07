@@ -1,0 +1,18 @@
+{
+  "extends": "../../bin/config/tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "build",
+    "jsx": "react-jsx",
+    "paths": {"@/*": ["./src/*"]}
+  },
+  "exclude": ["./build", "**/*.test.ts"],
+  "include": ["./src/**/*"],
+  "references": [
+    { "path": "../../packages/web-config" },
+    { "path": "../../packages/tailwindcss" },
+    { "path": "../../packages/ajax" },
+    { "path": "../../packages/lite-ui" },
+    { "path": "../../packages/i18n"}
+  ]
+}

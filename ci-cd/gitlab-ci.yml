@@ -1,0 +1,76 @@
+image: alpine:latest
+
+variables:
+  CI_DEBUG_TRACE: "false"
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_DEPTH: 1
+
+.build-deploy-rules:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "test"
+    - if: $CI_COMMIT_BRANCH == "main"
+
+before_script:
+  - apk add --no-cache --upgrade bash curl jq
+
+stages:
+  - init
+  - linting-testing
+  - build
+  - deploy
+
+init:
+  stage: init
+  tags:
+    - common-builder
+  script:
+    - bash ${CI_PROJECT_DIR}/bin/ci-cd/validate.sh
+  artifacts:
+    reports:
+      dotenv: build.env
+
+linting-testing:
+  image: node:24.11.0-alpine
+  stage: linting-testing
+  tags:
+    - common-builder
+  dependencies:
+    - init
+  script:
+    - ./bin/init apps/${APP}
+    - npm run build
+    - npm run eslint
+    - npm run test
+
+build-and-push:
+  stage: build
+  image: docker:28.5.1-cli
+  tags:
+    - common-builder
+  services:
+    - docker:28.5.1-dind
+  dependencies:
+    - init
+  rules:
+    - !reference [.build-deploy-rules, rules]
+  script:
+    - bash ${CI_PROJECT_DIR}/bin/ci-cd/build.sh
+  artifacts:
+    reports:
+      dotenv: apps/${APP}/build.env
+
+deploy:
+  stage: deploy
+  image: alpine:latest
+  tags:
+    - common-builder
+  dependencies:
+    - build-and-push
+  rules:
+    - !reference [.build-deploy-rules, rules]
+  before_script:
+    - apk add --no-cache openssh-client bash
+    - eval $(ssh-agent -s)
+  script:
+    - bash ${CI_PROJECT_DIR}/bin/ci-cd/deploy.sh

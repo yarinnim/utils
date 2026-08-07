@@ -1,0 +1,11 @@
+---
+description: The rule to define the use of TailwindCSS
+globs:
+alwaysApply: false
+---
+
+# TailwindCSS
+
+- Use color base:  `primary`, `secondary`, `success`, `info`, `warning` and `error`
+- If the component `className` is too big, use declared `className` in `.css` file.
+- The declared class must be prefixed to avoiding global className.

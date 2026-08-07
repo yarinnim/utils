@@ -1,0 +1,44 @@
+#! /usr/bin/env node
+
+/**
+ * This tool is to initialize the application by
+ * installing the required packages that defined
+ * in configuration,  groups them into workspace.
+ *
+ * @copryright 2022
+ */
+const { cpSync } = require('fs');
+const { touchFile, absoluteToRelative } = require('./utils/file');
+const { validateApp } = require('./utils/app');
+const tree = require('./utils/tree');
+
+const { scope, app, sourcePath, appPath } = validateApp({
+  template: `${__dirname}/template/package-template`,
+  dest: 'packages',
+});
+
+function touchFiles() {
+  const files = ['package.json'];
+  files.forEach((file) => touchFile(appPath(file), (content) => {
+    console.log(`[INFO] Updating file content [${file}]...`);
+    console.log({ app });
+    return content
+      .replaceAll('{SCOPE_NAME}', scope)
+      .replaceAll('{PACKAGE_NAME}', app);
+  }));
+}
+
+function init() {
+  console.log(`[INFO] Copying template files into ${appPath()}...`);
+  cpSync(sourcePath, appPath(), {
+    recursive: true,
+    dereference: false,
+    verbatimSymlinks: false,
+  });
+  absoluteToRelative(appPath());
+  touchFiles();
+}
+
+init();
+console.log('[INFO] Code-base initialization is done...');
+tree(appPath());

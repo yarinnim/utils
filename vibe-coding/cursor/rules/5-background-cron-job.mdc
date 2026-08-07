@@ -1,0 +1,25 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Background or Cron Job
+
+- File location: under ``src/jobs`` folder
+- File name: ``FEATURE.job.ts`` 
+- Each job file has only one exported default function
+- The default exported method accept the interval configuration as first parameter
+- The job executed based on the ``interval`` parameter
+- No extra export member is defined
+- The job process is separated from the job running eg:
+
+```ts
+const function processJob() {
+  ----
+}
+
+const JOB_INTERVAL = '*** JOB INTERVAL FORMAT ***';
+export default function runJob(inverval: string = JOB_INTERVAL) {
+  /* spawn the job based on ``intervall`` */
+}
+```

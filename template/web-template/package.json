@@ -1,0 +1,25 @@
+{
+  "name": "@{SCOPE_NAME}/{APP_NAME}",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc --build && webpack --mode production",
+    "start:dev": "npm run build && webpack-dev-server --mode development",
+    "eslint": "eslint src --ext .ts,.tsx --ignore-pattern '**/*.test.ts' --ignore-pattern '**/*.spec.ts'",
+
+    "test": "jest --detectOpenHandles --forceExit",
+    "test:dev": "npm run test -- --watchAll"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "@core/ajax": "^1.0.0",
+    "@core/lite-ui": "^1.0.0",
+    "@core/i18n": "^1.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^7.6.0"
+  },
+  "devDependencies": {
+    "@core/web-config": "^1.0.0",
+    "@core/tailwindcss": "^1.0.0"
+  }
+}

@@ -1,0 +1,31 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Documentation
+
+## Package
+
+### Installation
+
+Add package to the two files manually, the following adding the local package
+name ``@core/lite-ui`` to the project.
+
+- Add it to ``package.json`` file
+
+```json
+"depedencies": {
+  "@core/lite-ui": "^1.0.0",
+}
+```
+
+- Add it to ``tsconfig.json`` file
+
+```json
+"references": [
+  { "path": "../../packages/lite-ui" }
+]
+```
+
+

@@ -1,0 +1,6 @@
+services:
+  service:
+    image: ${IMAGE_NAME}
+    build:
+      context: ../../../
+      dockerfile: ./apps/${APPLICATION_FOLDER}/Dockerfile
