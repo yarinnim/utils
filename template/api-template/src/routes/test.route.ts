@@ -1,4 +1,4 @@
-import { type Route, type Response, type Request } from '@core/api';
+import { type Route, type Response, type Request } from 'xpref';
 import logger from '../log-client';
 
 const action = (req: Request, res: Response) => {

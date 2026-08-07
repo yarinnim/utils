@@ -25,8 +25,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@core/api": "^1.0.0",
-    "knexify": "^1.0.0",
+    "xpref": "latest",
+    "knexify": "latest",
     "@core/log-client": "^1.0.0",
     "@core/message-queue": "^1.0.0",
     "@core/utils": "^1.0.0",
