@@ -1,4 +1,4 @@
-import type { Model } from '@core/db';
+import type { Model } from 'knexify';
 import { initModel } from './pool';
 
 const TABLE = 'test';

@@ -1,4 +1,4 @@
-import db, { type Connection, type Model, createModel } from '@core/db';
+import knexify, { type Connection, type Model, createModel } from 'knexify';
 import {
   DB_HOST,
   DB_PORT,
@@ -21,7 +21,7 @@ export const connection: Connection = {
   },
 };
 
-const pool = db({ connection });
+const pool = knexify({ connection });
 
 export function initModel(tableName: string): Model {
   return createModel(pool, tableName);
