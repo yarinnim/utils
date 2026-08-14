@@ -40,12 +40,12 @@ alwaysApply: true
 - The model with table declaration as ``const TABLE:string = 'table name';``;
 - Database connection is located at ``src/models/pool.ts``
 - Model follows the ``src/models/test.model.ts``, database is ``src/models/pool.ts``
-- Model Field name uses camelCase (camel case) because it is changed by ``@core/db`` package
+- Model Field name uses camelCase (camel case) because it is changed by ``knexify`` package
 - Database Table field name use underscore case. Eg. ``first_name``.
 - Include soft delete check with ``whereNull('deleted_at')``
 - Never declare database table field names.
 - When using ``where``, recommend to object base, eg: ``where({ age: 123, name: 'test'})``.
-- Never import any thing from ``knex`` as we use ``@core/db``.
+- Never import any thing from ``knex`` as we use ``knexify``.
 - Hashing: use ``pool.raw(encode(digest(?, 'sha256'), 'hex'), [rawPassword])``
 - All ``user`` table must be ``public.user``.
 - New created record returns its ID as ``.then(([{ id }]: { id: number }[]) => id)``
@@ -58,7 +58,7 @@ alwaysApply: true
 - Never export types from model, it should be private only (this protects regression).
 
 ### Extended Functions
-The following functions already exist as extended in the ``@core/db``,
+The following functions already exist as extended in the ``knexify``,
 so never implement the following functions:
 
 - ``find``: Finds the first record based on its id
@@ -77,7 +77,7 @@ so never implement the following functions:
 
     ```ts
     import { initModel } from './pool';
-    import { type BaseEntity } from '@core/db/types';
+    import { type BaseEntity } from 'knexify/types';
 
     export Test = BaseEntity & {
       /* the rest of fields */
@@ -88,7 +88,7 @@ so never implement the following functions:
     export default table;
     ```
 
-- Never implement ``findById`` in model, ``find`` method already implemented in @core/db, just use `table().find()`
+- Never implement ``findById`` in model, ``find`` method already implemented in knexify, just use `table().find()`
 - **Timestamp**: use ``pool.raw('current_timestamp')`` instead as the following example:
 
   ```ts
@@ -98,10 +98,9 @@ so never implement the following functions:
     --
   ```
 
-- Do not implement the ``findAll`` function, use ``search`` from ``@core/db``, the syntax is:
+- Do not implement the ``findAll`` function, use ``search`` from ``knexify``, the syntax is:
 
   ```ts
-    // Code: ../../packages/db/src/search.ts
     table().search(q: string, inFields: string[], paginate: Paging);
   ```
 
@@ -127,11 +126,11 @@ return table()
 
 - Never apply on Select Query
 - Apply on to action Query
-- Transaction used as ``import { type Transaction } from '@core/db';``
+- Transaction used as ``import { type Transaction } from 'knexify';``
 - Separate select and action query as the following example
 
 ```ts
-import { type Transaction } from '@core/db;
+import { type Transaction } from 'knexify;
 import pool from './pool';
 
 return getUser(id)

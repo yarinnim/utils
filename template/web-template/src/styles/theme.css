@@ -1,3 +1,16 @@
+
+:root {
+  --color-primary: #C9FB01;
+  --font-display: 'SF Pro Display', 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --color-primary: #C9FB01;
+  color-scheme: dark;
+}
+
 @theme {
   --color-primary: #C9FB01;
+  --font-display: 'SF Pro Display', 'Segoe UI', sans-serif;
 }

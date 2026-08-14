@@ -30,11 +30,12 @@ alwaysApply: true
 
 - The controller file name is  ``.countroller.ts`` of each service.
 - The controller never calls function from model, it knows and calls function from service.
-- The controller action needs to return as ``Promise<void>``.
+- The controller action needs to return as ``Promise<Response>``.
 - The controller action needs to have validation function declare along it.
 - The controller function name is suffixed with ``Action``.
+- Use short naming `export const userAction(req: Request, res: Response)`, not `response: Response`. 
 - The ``paginate`` is a combination of ``pageSize`` and ``page`` from ``request.query``.
-- The ``detailAction`` of countroller, no need to validate the resource exists, because validated by middleare already.
+- The ``detailAction`` of countroller, no need to validate the resource existing, because validated by middleare already.
 - Never add extra data to the response, such as ``data``, ``pagination``, ``status`` etc. 
 - When controller action name is changed, fix the name used in route well.
 - Error response: do not add extra field, such as ``status``, ``success``, ``error`` etc. Eg:
@@ -61,6 +62,10 @@ alwaysApply: true
     res.status(400).json({ message });
     ```
 
+## Middleware
+
+- Middleware needs to return `void | Promise<void>` always
+
 ## Route and Router
 
 - Route is the ``index.ts`` of the service
@@ -71,10 +76,10 @@ alwaysApply: true
 - Never use sub-route twice.
 - **Route Hierarchy**: Correct nested routes with parameter inheritance.
 
-### Route syntax from ``@core/api``:
+### Route syntax from ``xpref``:
 
   ```ts
-  import { type Route, type Response, type Request } from '@core/api';
+  import { type Route, type Response, type Request } from 'xpref';
   import { getAction, postAction, detailAction, updateAction, deleteAction } from './user.controller';
   import { validateResource } from './user.middleware';
 
@@ -95,7 +100,7 @@ alwaysApply: true
 - After created router, add it to ``/src/routes/index.ts`` as the followng:
 
   ```ts
-  import { type Route } from '@core/api';
+  import { type Route } from 'xpref';
   import userRoute from '../service/user';
 
   export default {

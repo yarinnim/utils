@@ -16,3 +16,8 @@ export const useModal = () => {
   const { modal } = useContext(context);
   return modal;
 };
+
+export const useTheme = () => {
+  const { theme } = useContext(context);
+  return theme;
+};
