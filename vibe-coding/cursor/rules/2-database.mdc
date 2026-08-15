@@ -21,6 +21,8 @@ alwaysApply: true
 - Creating unique, use simple name, without ``indexName`` props. Eg. ``table.unique('app_id', 'cod');``
 - Soft Delete is identified by ``deleted_at``.
 - No need to create the ``is_active`` field.
+- Add new field(s) directly into the existing migration, no need to create new migration and apply modification by adding field.
+
 
 ## Seed and Table structure
 
@@ -56,8 +58,10 @@ alwaysApply: true
 - Never validate use input with model, because the model function will return effected records.
 - Each function of model performs only single query, multiple query operation is made with Server.
 - Never export types from model, it should be private only (this protects regression).
+- Do not use `whereNull('deleted_at')`, use `whereAction()`, or `whereActive(cond)`.
 
 ### Extended Functions
+
 The following functions already exist as extended in the ``knexify``,
 so never implement the following functions:
 
@@ -67,7 +71,7 @@ so never implement the following functions:
 - ``findByField``: Find the first record based on its field value
 - ``exists``: Checks if the record exists or not.
 - ``whereFirst``: Get the first record;
-- ``active``: Get only the active records;
+- ``whereActive``: Get only the active records;
 
 - ``create``: Create the record based on its type.
 - ``remove``: Soft delete
@@ -89,12 +93,13 @@ so never implement the following functions:
     ```
 
 - Never implement ``findById`` in model, ``find`` method already implemented in knexify, just use `table().find()`
-- **Timestamp**: use ``pool.raw('current_timestamp')`` instead as the following example:
+- **Timestamp**: use ``pool.raw('current_timestamp')`` and ``whreRaw`` instead as the following example:
 
   ```ts
     import pool, { initModel } from './pool';
     ---
-    table().update({ deletedAt: pool.raw('current_timestamp')})
+    table().update({ deletedAt: pool.raw('current_timestamp')});
+    table().whereRaw('expires_at < currentimestamp');
     --
   ```
 

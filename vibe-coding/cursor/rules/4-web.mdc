@@ -61,7 +61,7 @@ alwaysApply: true
 ## Component Style
 
 - Each component as own dedicated style.
-- File location `src/components/styles`
+- File location `src/components/ComponentName/style.css`
 - Each file name refers to its compnent. Eg. `confirm.css` refers to `Confirm.tsx`
 - Style file name is lower case
 - The component style must be prefixed with its component name to avoid the conflict with global style.
@@ -136,7 +136,7 @@ i18n.setLocale('zh');
 - Each request or fetch need to implement the loading mechanism to make sure no duplicated request.
 - Fetch State: ``{ isAwait, response, error }``
 - Fetch Hook Result ``[FETCH-STATE, request]``.
-- **Error Request**: Show error toast, the **Error Message** is from Error Object.
+- **Error Request**: Show error toast, the **Error Message** is from Error Object and will disappear within standard seconds.
 
 ## Loading Component and How to use
 
