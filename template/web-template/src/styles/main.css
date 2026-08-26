@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 @import './theme.css';
+@import '../components/Modal/style.css';
 
 * {
   box-sizing: border-box;
@@ -20,23 +21,12 @@ button {
 
 /* make scrollbar smaller */
 ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
   background-color: #f0f0f0; /* Track color */
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: #ccc; /* Thumb color */
-}
-
-.modal-overlay {
-  @apply flex z-[9999] items-center justify-center
-  fixed inset-0 bg-gray-600/50 p-6;
-
-  .modal-backdrop {
-    @apply isolate min-w-96 rounded-xl bg-gray-900 shadow-lg ring-1 ring-gray-100/9
-    max-w-[calc(100dvw-20px)];
-
-    .modal-content {
-      @apply max-h-[calc(100dvh-300px)];
-    }
-  }
+  border-radius: 999px;
 }

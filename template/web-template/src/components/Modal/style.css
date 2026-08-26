@@ -1,0 +1,27 @@
+.modal {
+  @apply flex z-[9999] items-center justify-center
+    fixed inset-0 bg-gray-600/50 p-4;
+}
+
+.modal__backdrop {
+  @apply isolate w-full min-w-0 rounded-xl bg-gray-900 shadow-lg
+    ring-1 ring-gray-100/9 max-w-[calc(100dvw-2rem)];
+}
+
+.modal__content {
+  @apply max-h-[calc(100dvh-300px)];
+}
+
+.modal__close {
+  @apply absolute top-1 right-2 size-10 text-gray-700 hover:text-gray-400;
+}
+
+@media (min-width: 768px) {
+  .modal {
+    @apply p-6;
+  }
+
+  .modal__backdrop {
+    @apply min-w-96 max-w-[calc(100dvw-20px)];
+  }
+}

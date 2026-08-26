@@ -52,6 +52,7 @@ alwaysApply: true
 ## Component
 
 - File location: ``src/components``.
+- Component which is dedicated to the page, must be under its page folder.
 - Use atomic component concept and approach.
 - Each compnent should not have more than 20 lines of JSX
 - Component layout or form is with another file at the same folder.
@@ -60,7 +61,7 @@ alwaysApply: true
 ## Component Style
 
 - Each component as own dedicated style.
-- File location `src/components/styles`
+- File location `src/components/ComponentName/style.css`
 - Each file name refers to its compnent. Eg. `confirm.css` refers to `Confirm.tsx`
 - Style file name is lower case
 - The component style must be prefixed with its component name to avoid the conflict with global style.
@@ -135,7 +136,7 @@ i18n.setLocale('zh');
 - Each request or fetch need to implement the loading mechanism to make sure no duplicated request.
 - Fetch State: ``{ isAwait, response, error }``
 - Fetch Hook Result ``[FETCH-STATE, request]``.
-- **Error Request**: Show error toast, the **Error Message** is from Error Object.
+- **Error Request**: Show error toast, the **Error Message** is from Error Object and will disappear within standard seconds.
 
 ## Loading Component and How to use
 
@@ -172,6 +173,7 @@ return (<Loading isAwait={fetchState.isAwait}>
 
 ## Form and Submiting Data
 
+- Use `import { SubmitEvent, SubmitEventHandler } from 'react';` for form submitting.
 - **Form**: Use native HTML Tag (<form>).
 - Use ``useForm`` hook from ``@/hooks``.
 - Always validated with ``error``, ``errrors`` and ``isAwait``.
@@ -187,12 +189,13 @@ return (<Loading isAwait={fetchState.isAwait}>
 ### How to use
 
 ```ts
+import { SubmitEvent, SubmitEventHandler } from 'react';
 import { useForm } from '@/hooks';
 
 export default function Form() {
   const [formState, submitForm] = useForm();
 
-  const onSubmit = (evt: any) => {
+  const onSubmit: SubmitEventHandler<HTMLFormElement> = (evt: SubmitEvent) => {
     return submitForm(evt)
       .then(console.log)
       .catch(console.log);

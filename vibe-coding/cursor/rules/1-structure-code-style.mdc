@@ -19,6 +19,7 @@ alwaysApply: true
 # Code Style
 
 - Type import must be with ``import { type Typename } from './module';``.
+- If all are type, use ``import type { TypeA, TypeB, TypeC } from './module';`.
 - Maintain the same functionality but with less code duplication
 - Keep all modules skinny
 - Type Safety with typescript
