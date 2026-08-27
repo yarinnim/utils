@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 import { I18N_URL, I18N_VERSION } from '@/constant';
-import useI18n from '@core/i18n';
+import useI18n, { type Locale } from '@core/i18n';
 import ajax from '@/utils/ajax';
 import { useModal, useTheme } from '@core/lite-ui/hooks';
 import Modal from '@/components/Modal';
@@ -11,7 +11,7 @@ const langFetcher = (url: string) => ajax(url)
 
 type I18n = {
   translate: (phrase: string, bindedParams?: unknown) => string,
-  locale: string,
+  locale: Locale,
   setLocale: (code: string) => Promise<void>,
 };
 

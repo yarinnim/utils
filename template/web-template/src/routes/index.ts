@@ -24,7 +24,7 @@ export default function createRoutes() {
       element: re(MainLayout),
       children: [
         ...routes,
-        createRoute('/*', 'Error/NotFound'),
+        createRoute('/*', 'error/NotFound'),
       ],
     },
   ];
