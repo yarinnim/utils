@@ -7,6 +7,11 @@ export const useAutoFetch = createAutoFetch({ fetcher: ajax });
 export const useFetch = createUseFetch({ fetcher: ajax });
 export const useForm = createUseForm({ fetcher: ajax });
 
+export const useI18n = () => {
+  const { i18n } = useContext(context);
+  return i18n;
+};
+
 export const useTranslation = () => {
   const { i18n } = useContext(context);
   return i18n.translate;
