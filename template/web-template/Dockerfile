@@ -7,6 +7,7 @@ COPY apps/{APP_NAME} ./apps/{APP_NAME}
 
 RUN ./bin/init apps/{APP_NAME}
 RUN rm -rfv ./apps/{APP_NAME}/jest.config.ts
+RUN npm install --save-dev webpack-cli
 RUN npm run build
 
 FROM nginx:alpine as production
