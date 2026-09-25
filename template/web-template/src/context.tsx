@@ -18,7 +18,7 @@ type I18n = {
 type ContextProps = {
   i18n: I18n,
   modal: any,
-  theme: [string, (mode: string) => void],
+  theme: ReturnType<typeof useTheme>,
 };
 
 const MainContext = createContext({} as ContextProps);
