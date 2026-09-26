@@ -9,15 +9,9 @@ const langFetcher = (url: string) => ajax(url)
   .then((result: any) => result)
   .catch(() => ({}));
 
-type I18n = {
-  translate: (phrase: string, bindedParams?: unknown) => string,
-  locale: Locale,
-  setLocale: (code: string) => Promise<void>,
-};
-
 type ContextProps = {
-  i18n: I18n,
   modal: any,
+  i18n: ReturnType<typeof useI18n>,
   theme: ReturnType<typeof useTheme>,
 };
 
