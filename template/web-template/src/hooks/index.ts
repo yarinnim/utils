@@ -7,9 +7,18 @@ export const useAutoFetch = createAutoFetch({ fetcher: ajax });
 export const useFetch = createUseFetch({ fetcher: ajax });
 export const useForm = createUseForm({ fetcher: ajax });
 
+/*
 export const useI18n = () => {
   const { i18n } = useContext(context);
   return i18n;
+};
+*/
+
+export const useLocale = () => {
+  const { i18n } = useContext(context);
+  const { locale, setLocale } = i18n;
+  const language = locale?.language || 'en';
+  return { language, locale, setLocale };
 };
 
 export const useTranslation = () => {
