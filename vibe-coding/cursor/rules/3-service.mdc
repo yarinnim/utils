@@ -75,6 +75,7 @@ alwaysApply: true
 - Do not combind resource detail, NO ``users/:userId``, set ``:userId`` as sub-route.
 - Never use sub-route twice.
 - **Route Hierarchy**: Correct nested routes with parameter inheritance.
+- As some service, accessing api is by admin which is treated as /internal, so all that routes must be under the /internal route.
 
 ### Route syntax from ``xpref``:
 
@@ -137,6 +138,17 @@ export const getUserDetailActon(req: Request, res: Response) => {
   const { user } = req;
   /* --- The process for user --- */
 };
+```
+### Internal Route
+
+```ts
+export const internalRoute = {
+  '/internal': ['internal', [], {}, {
+    '/users': ---
+    '/agents': ---
+    '/schools': ---
+  }]
+} as Route;
 ```
 
 ### Route Resource

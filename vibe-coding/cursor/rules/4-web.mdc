@@ -173,7 +173,7 @@ return (<Loading isAwait={fetchState.isAwait}>
 
 ## Form and Submiting Data
 
-- Use `import { SubmitEvent, SubmitEventHandler } from 'react';` for form submitting.
+- Use `import { SubmitEvent, SubmitEventHandler } from 'react';` for form submitting. DO NOT USE `FormEvent` to submit form.
 - **Form**: Use native HTML Tag (<form>).
 - Use ``useForm`` hook from ``@/hooks``.
 - Always validated with ``error``, ``errrors`` and ``isAwait``.
@@ -185,6 +185,7 @@ return (<Loading isAwait={fetchState.isAwait}>
 - **No ``evt.preventDefault()**: On submit form, this is handled by ``useForm`` automatically.
 - **No client value is used**: When updating, use response value, not client value.
 - **Hidden Field**: Use native HTML Tag, not extra tag is wrapped, placed right after <form> Tag.
+- Form Input should be with Label, Place Holder and Icon
 
 ### How to use
 

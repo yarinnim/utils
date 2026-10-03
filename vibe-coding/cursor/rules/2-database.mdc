@@ -22,6 +22,7 @@ alwaysApply: true
 - Soft Delete is identified by ``deleted_at``.
 - No need to create the ``is_active`` field.
 - Add new field(s) directly into the existing migration, no need to create new migration and apply modification by adding field.
+- One migration file is for one database table, never have more than one table in one migration.
 
 
 ## Seed and Table structure
