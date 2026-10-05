@@ -27,7 +27,7 @@ alwaysApply: true
 - Proper null handling
 - Always follow linting from ``eslint.config.js`` configuration
 - Uses promise/then instead of async/await
-- Documen all function with JTDocs with example
+- Document all function with JTDocs with example
 - TypeScript Type: Use type definitions instead of interfaces
 - Case: Use pascalCase always
 - Use descriptive variable names (eg. isLoading, hasPermission)
@@ -37,16 +37,17 @@ alwaysApply: true
 - Never use ``while`` loop, use recursive in stead.
 - Never exceed 100 characters or columns per line
 - When the string is too long, separate lines into array and merge using ``join(' ')`` method.
+- If there are many value comparison to a value, use array.include in stead.
 - Never use legacy or deprecated function, type or property.
 - Use quick return.
 - Never use ``Promise.all``, use ``promise.then`` only.
-- Always clean and remove unused property, parameter, variable and imorted member.
+- Always clean and remove unused property, parameter, variable and imported member.
 - Too long string example
 
     ```ts
     const description = [
       'Welcome to the Vibe coding structure.',
-      'We need to make sure everthing is formated',
+      'We need to make sure everything is formatted',
       ---
     ].join(' ');
     ```
