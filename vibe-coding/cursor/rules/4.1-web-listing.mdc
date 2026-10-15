@@ -43,8 +43,6 @@ const ItemsComponent = (props) => {
 };
 ```
 
-
-
 ## UI Placement and flow
 
 - The actions are right aligned

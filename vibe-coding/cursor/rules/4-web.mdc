@@ -57,6 +57,7 @@ alwaysApply: true
 - Each compnent should not have more than 20 lines of JSX
 - Component layout or form is with another file at the same folder.
 - The created form is always with separated file.
+- All clickable component, never scale its size.
 
 ## Component Style
 

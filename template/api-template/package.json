@@ -29,7 +29,6 @@
     "knexify": "latest",
     "@core/log-client": "^1.0.0",
     "@core/message-queue": "^1.0.0",
-    "@core/utils": "^1.0.0",
-    "dotenv": "latest"
+    "@core/utils": "^1.0.0"
   }
 }
