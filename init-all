@@ -2,3 +2,5 @@
 
 ls -d apps/*/ | xargs ./bin/init
 npm install --save-dev webpack
+npm outdated
+npx npm-check-updates
