@@ -1,0 +1,43 @@
+---
+description: Enforce Shadcn UI best practices, composition patterns, and design tokens.
+globs: src/**/*.{tsx,jsx}
+alwaysApply: false
+---
+
+# Shadcn UI Architecture & Rules
+
+1. **Compose, Don't Reinvent:**
+   - Always check if a Shadcn component exists before writing custom styled
+     elements (e.g., use `Alert` instead of a custom `div`, use `Separator`
+     instead of `<hr/>`, use `Skeleton` for loading states).
+   - Build complex layouts using proper composition: e.g., `Card` requires
+     `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, and
+     `CardFooter`.
+
+2. **Styling & Tailwind Tokens:**
+   - Use semantic design tokens (`bg-primary`, `text-muted-foreground`,
+     `bg-background`) instead of raw hardcoded values (e.g., *never* use
+     `bg-blue-500` or `text-gray-500`).
+   - Never override component color or typography primitives inside
+     `components/ui/` unless explicitly requested. Use `className` purely for
+     structural layout.
+   - Use `size-10` shorthand instead of `w-10 h-10`. Use `flex gap-*` instead
+     of `space-x-*` / `space-y-*`.
+
+3. **Component Structure & Accessibility:**
+   - Sub-items *must* be wrapped in their proper parent containers (e.g.,
+     `SelectItem` inside `SelectGroup`, `DropdownMenuItem` inside
+     `DropdownMenuGroup`).
+   - Dialog, Sheet, and Drawer components **must** always include a `*Title`
+     component (use `className="sr-only"` if it needs to be visually hidden for
+     accessibility).
+   - Always combine `cn()` for conditional classes.
+
+## Add new component
+
+To add a new component, do not copy or regenerate the code. Use the standard
+shadcn CLI:
+
+```bash
+npx shadcn@latest add COMPONENT-NAME
+```
