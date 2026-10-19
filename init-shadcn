@@ -1,0 +1,17 @@
+#! /usr/bin/env node
+
+const { resolve } = require('path');
+const { copyFileSync, cpSync } = require('fs');
+const spawn = require('./utils/spawn');
+
+const packages = ['shadcn', 'class-variance-authority', 'cn', 'tw-animate-css'];
+spawn('npm install', packages);
+
+const files = ['./components.json', './src'];
+const sourceDir = `${__dirname}/template/shadcn-template`;
+
+files.forEach((file) => {
+  const sourceFile = resolve(`${sourceDir}/${file}`);
+  console.log(`[INFO] Initializing ${file}...`);
+  cpSync(sourceFile, file, { recursive: true });
+});
