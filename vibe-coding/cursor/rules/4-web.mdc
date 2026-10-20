@@ -187,6 +187,7 @@ return (<Loading isAwait={fetchState.isAwait}>
 - **No client value is used**: When updating, use response value, not client value.
 - **Hidden Field**: Use native HTML Tag, not extra tag is wrapped, placed right after <form> Tag.
 - Form Input should be with Label, Place Holder and Icon
+- **Form Field**: Label without icon, but its field is mostly with icon
 
 ### How to use
 
