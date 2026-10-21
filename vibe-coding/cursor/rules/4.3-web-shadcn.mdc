@@ -35,8 +35,8 @@ alwaysApply: false
 
 ## Add new component
 
-To add a new component, do not copy or regenerate the code. Use the standard
-shadcn CLI:
+To add a new component, do not copy or regenerate the code to support the UI. Use the UI from
+shadcn always. If the @/components/ui not exist, you need to install the UI as the following:
 
 ```bash
 npx shadcn@latest add COMPONENT-NAME

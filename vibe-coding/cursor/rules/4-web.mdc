@@ -28,12 +28,13 @@ alwaysApply: true
 - Project Features: ``src/features``
 - Assets ``assets``
 
-## Layouts
+## Layouts and Design
 
 - Layout is the wrapper of the page
 - Location: ``src/layouts``
 - Layout consist of consistence structure, such as sidebar, footer, header.
 - Layout is injected with ``<Outlet />`` from ``react-router``.
+- Menu
 
 ## Route
 
@@ -58,6 +59,7 @@ alwaysApply: true
 - Component layout or form is with another file at the same folder.
 - The created form is always with separated file.
 - All clickable component, never scale its size.
+- Menu Item should not break word
 
 ## Component Style
 
@@ -188,6 +190,7 @@ return (<Loading isAwait={fetchState.isAwait}>
 - **Hidden Field**: Use native HTML Tag, not extra tag is wrapped, placed right after <form> Tag.
 - Form Input should be with Label, Place Holder and Icon
 - **Form Field**: Label without icon, but its field is mostly with icon
+- **textarea**: Should not have ICON
 
 ### How to use
 
